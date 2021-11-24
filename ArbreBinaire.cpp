@@ -3,32 +3,28 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <math.h>
+#include<stdio.h>
 #include <chrono>
-
 using namespace std;
-
 // Binary Tree
 typedef struct Arbre
 {
-	char Valeur;
+	char* Valeur;
 	Arbre* gauche, * droite;
 } Arbre;
 typedef struct Arbre* ExpArbre;
 
 // Tree
-ExpArbre Creation_noeud(int Valeur);
+ExpArbre Creation_noeud(char* Valeur);
 ExpArbre ConstruireArbre(ExpArbre T, char postfix[]);
 int Priority(char ch);
 void Conversion_post(string Expression, char postfix[]);
 // Extra
-void Expression_resultat(char postfix[]);
 int Hauteur(ExpArbre T);
 int taille(ExpArbre node);
 // Output
 void Afficher_noeud(ExpArbre T);
-void Prefixe(ExpArbre T);
 void Postfixe(ExpArbre T);
-void Infixe(ExpArbre T);
 void Autres(char postfix[], ExpArbre tree);
 void Affichage(ExpArbre tree, char postfix[]);
 void Affichage_Arbre(ExpArbre T, const string& prefix);
@@ -37,25 +33,32 @@ void Insert_Line();
 bool Expression_Validation(string Expression);
 bool Operateur(char ch);
 bool Operade(char c);
-
+string Expression;
 
 int main()
 {
 	cout << "\n\t\t    ( Expression Arbre binaire )" << endl;
 	Insert_Line();
-	cout << "\n Entrer l'expression : ";
-	string Expression;
-	cin >> Expression;
 
-	
+	//Entrer votre expression : 
+	// cout << "\n Entrer l'expression : ";
+	// cin >> Expression;
+
+	//Des expression exemplaire : 
+	// Expression = "123+423*12312/8567^54+1231*53";
+	Expression = "123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53";
+	// Expression = "123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53";
+	// Expression = "123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53-123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53/123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53";
+	// Expression = "123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53-123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53+123+423*12312/8567^54+1231*53";
+
+
 	auto start_Program = chrono::high_resolution_clock::now();
 	if (!Expression_Validation(Expression)) {
-		cout << " L'expression peut seulement contenir :  [ 1-9 , + , - , * , / , % , ^ ( , ) ] " << endl;
+		cout << " L'expression peut seulement contenir :  [ 1-9 , + , - , * , / , % , ^ , ( , ) ] " << endl;
 		return 0;
 	}
-	char* Postfixe = (char*)malloc(sizeof(char) * Expression.length());
+	char Postfixe[10000];
 
-	
 	auto start = chrono::high_resolution_clock::now();
 	Conversion_post(Expression, Postfixe);
 	auto end = chrono::high_resolution_clock::now();
@@ -68,7 +71,6 @@ int main()
 	start = chrono::high_resolution_clock::now();
 	cout << "\n" << Arbre->Valeur << "\n";
 	Affichage_Arbre(Arbre, "");
-
 	end = chrono::high_resolution_clock::now();
     unsigned long nanoseconds_Aff = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
 	
@@ -80,7 +82,7 @@ int main()
 	cout << "\n Le temp de convertion Postfixée en nanoseconds : " << nanoseconds_Post << endl;
 	cout << "\n Le temp d'affichage de l'arbre en nanoseconds : " << nanoseconds_Aff << endl;
 	Insert_Line();
-
+	// Postfixe
 
 	return 0;
 }
@@ -92,16 +94,8 @@ void Insert_Line()
 void Affichage(ExpArbre Arbre, char postfix[])
 {
 	Insert_Line();
-	cout << "\n Expression PreFixée (Parent, Gauche, Droit) : [ ";
-	Prefixe(Arbre);
-	cout << "]" << endl;
-	Insert_Line();
 	cout << "\n Expression PostFixée (Gauche, Droit, Parent) : [ ";
 	Postfixe(Arbre);
-	cout << "]" << endl;
-	Insert_Line();
-	cout << "\n Expression Infixée (Gauche, Parent, Droit) : [ ";
-	Infixe(Arbre);
 	cout << "]" << endl;
 	Insert_Line();
 	Autres(postfix, Arbre);
@@ -110,10 +104,7 @@ void Affichage(ExpArbre Arbre, char postfix[])
 void Autres(char postfix[], ExpArbre Arbre)
 {
 	cout << "\n\n\n\t ( Autres fonctionnalites Ajouter au projet )" << endl << "\n\n";
-	Insert_Line();
-	cout << "\n Resultat : ";
-	Infixe(Arbre);
-	Expression_resultat(postfix);
+
 	Insert_Line();
 	cout << "\n Nombre des noeuds = " << taille(Arbre);
 	cout << " , Hauter = " << Hauteur(Arbre) << endl;
@@ -142,8 +133,8 @@ bool Expression_Validation(string Expression)
 	}
 	return true;
 }
-// Create a new Tree Node
-ExpArbre Creation_noeud(int Valeur)
+// Create a new Tree noeud
+ExpArbre Creation_noeud(char* Valeur)
 {
 	Arbre* temp;
 	temp = (Arbre*)malloc(sizeof(Arbre));
@@ -161,25 +152,63 @@ ExpArbre Creation_noeud(int Valeur)
 ExpArbre ConstruireArbre(ExpArbre Arbre_binaire, char postfixe[])
 {
 	int i = 0;
+	int j;
 	stack<Arbre*> st;
 	Arbre* temp_Arbre1;
 	Arbre* temp_Arbre2;
-	while (postfixe[i] != '\0')
+	
+
+	while (postfixe[i] != '\0' | st.empty() == false)
 	{
-		if (!(postfixe[i] == '+' || postfixe[i] == '-' || postfixe[i] == '*' || postfixe[i] == '/'
-			|| postfixe[i] == '%' || postfixe[i] == '^'))
+		j = 0;
+		if (!(postfixe[i] == '+' || postfixe[i] == '-' || postfixe[i] == '*' || postfixe[i] == '/' || postfixe[i] == '^'
+			|| postfixe[i] == '%' || postfixe[i] == '\0'))
 		{
-			Arbre_binaire = Creation_noeud(postfixe[i]);
-			st.push(Arbre_binaire);
+			char* chaine = (char*)malloc(sizeof(char) * 100);
+			while(postfixe[i] != ' ' )
+			{
+                if(postfixe[i] == '\0'){
+                    break;
+                }
+				chaine[j] = postfixe[i];
+				j++;
+				i++;
+			}
+			// int number = stoi(chaine);
+			if(Operade(chaine[0]))
+			{
+				Arbre_binaire = Creation_noeud(chaine);
+				st.push(Arbre_binaire);
+			}
 		}
 		else
 		{
-			Arbre_binaire = Creation_noeud(postfixe[i]);
-			temp_Arbre1 = st.top(); st.pop();
-			temp_Arbre2 = st.top(); st.pop();
-			Arbre_binaire->droite = temp_Arbre1;
-			Arbre_binaire->gauche = temp_Arbre2;
-			st.push(Arbre_binaire);
+            if(postfixe[i] != '\0')
+            {
+                char* chaine = (char*)malloc(sizeof(char) * 1);
+                chaine[0] = postfixe[i];
+                Arbre_binaire = Creation_noeud(chaine);
+            }
+            if(!st.empty()){
+                temp_Arbre1 = st.top(); st.pop();
+            }
+            if(!st.empty()){
+                temp_Arbre2 = st.top(); st.pop();
+            }
+            if(Arbre_binaire != temp_Arbre1 && temp_Arbre1 != NULL)
+            {
+                Arbre_binaire->droite = temp_Arbre1;
+                temp_Arbre1 = NULL;
+            }
+            if(Arbre_binaire != temp_Arbre2 && temp_Arbre2 != NULL)
+            {
+                Arbre_binaire->gauche = temp_Arbre2;
+                temp_Arbre2 = NULL;
+            }
+            if(postfixe[i+1] != '\0')
+            {
+			    st.push(Arbre_binaire);
+            }
 		}
 		i++;
 	}
@@ -190,15 +219,7 @@ void Afficher_noeud(ExpArbre T)
 {
 	cout << T->Valeur << " ";
 }
-void Prefixe(ExpArbre T)
-{
-	if (T != NULL)
-	{
-		Afficher_noeud(T);
-		Prefixe(T->gauche);
-		Prefixe(T->droite);
-	}
-}
+
 void Postfixe(ExpArbre T)
 {
 	if (T != NULL)
@@ -208,15 +229,7 @@ void Postfixe(ExpArbre T)
 		Afficher_noeud(T);
 	}
 }
-void Infixe(ExpArbre T)
-{
-	if (T != NULL)
-	{
-		Infixe(T->gauche);
-		Afficher_noeud(T);
-		Infixe(T->droite);
-	}
-}
+
 int Priority(char ch)
 {
 	switch (ch)
@@ -237,17 +250,17 @@ int Priority(char ch)
 }
 void Conversion_post(string Expression, char postfix[])
 {
-	unsigned int counter1 = 0;
+	unsigned int i = 0;
 	stack<char> Pile_Parenth;
 	int postCount = 0;
 	char element;
-	while (counter1 < Expression.length())
+	while (i < Expression.length())
 	{
-		element = Expression[counter1];
+		element = Expression[i];
 		if (element == '(')
 		{
 			Pile_Parenth.push(element);
-			counter1++;
+			i++;
 			continue;
 		}
 		if (element == ')')
@@ -261,100 +274,54 @@ void Conversion_post(string Expression, char postfix[])
 			{
 				Pile_Parenth.pop();
 			}
-			counter1++;
+			i++;
 			continue;
 		}
 
 		if (Priority(element) == 0)
 		{
-			postfix[postCount++] = element;
+			postfix[postCount++] = Expression[i];
 		}
 		else
 		{
 			if (Pile_Parenth.empty())
 			{
 				Pile_Parenth.push(element);
+				postfix[postCount++] = ' ';
 			}
 			else
 			{
+				int test = 1;
 				while (!Pile_Parenth.empty() && Pile_Parenth.top() != '(' &&
 					Priority(element) <= Priority(Pile_Parenth.top()))
 				{
-					postfix[postCount++] = Pile_Parenth.top();
-					Pile_Parenth.pop();
+					if(test | Operateur(element)){
+						postfix[postCount++] = ' ';	
+						postfix[postCount++] = Pile_Parenth.top();
+						Pile_Parenth.pop();
+						test = 0;
+					}
+
+				}
+
+				if(test | Operateur(element)){
+					postfix[postCount++] = ' ';	
+					test = 0;
 				}
 				Pile_Parenth.push(element);
 			}
 		}
-		counter1++;
+		i++;
 	}
 
 	while (!Pile_Parenth.empty())
 	{
+		postfix[postCount++] = ' ';
 		postfix[postCount++] = Pile_Parenth.top();
 		Pile_Parenth.pop();
 	}
 	postfix[postCount] = '\0';
-}
-//EXTRA
-void Expression_resultat(char postfix[])
-{
-	stack<float> result;
-	int k = 0;
-	bool error = false;
-	while (postfix[k] && !error)
-	{
-		char ch = postfix[k];
-		if (Operade(ch))
-		{
-			result.push((float)postfix[k] - '0');
-		}
-		else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' || ch == '^')
-		{
-			float num1 = result.top();
-			result.pop();
-			float num2 = result.top();
-			result.pop();
-			float calc = 0;
-			switch (ch)
-			{
-			case '+':
-				calc = num2 + num1;
-				break;
-			case '-':
-				calc = num2 - num1;
-				break;
-			case '*':
-				calc = num2 * num1;
-				break;
-			case '/':
-				if (num1 == 0)
-				{
-					cout << "\n Math Error: Can't Divide by Zero " << endl;
-					error = true;
-					break;
-				}
-				calc = num2 / num1;
-				break;
-			case '%':
-				if (num1 == 0)
-				{
-					cout << "\n Math Error: Can't Divide by Zero " << endl;
-					error = true;
-					break;
-				}
-				calc = ((int)num2) % ((int)num1);
-				break;
-			case '^':
-				calc = pow(num2, num1);
-				break;
-			}
-			result.push(calc);
-		}
-		k++;
-	}
-	if (!error)
-		cout << " = " << result.top() << endl;
+	i++;
 }
 int taille(ExpArbre node)
 {
@@ -380,29 +347,29 @@ void Affichage_Arbre(ExpArbre T, const string& prefix)
                 return;
         }
 
-        bool hasLeft = (T->gauche != NULL);
-        bool hasRight = (T->droite != NULL);
+        bool gauche = (T->gauche != NULL);
+        bool droite = (T->droite != NULL);
 
-        if (!hasLeft && !hasRight)
+        if (!gauche && !droite)
         {
                 return;
         }
 
         cout << prefix;
-        cout << ((hasLeft  && hasRight) ? "├── " : "");
-        cout << ((!hasLeft && hasRight) ? "└── " : "");
+        cout << ((gauche  && droite) ? "├── " : "");
+        cout << ((!gauche && droite) ? "└── " : "");
 
-        if (hasRight)
+        if (droite)
         {
-                bool printStrand = (hasLeft && hasRight && (T->droite->droite != NULL || T->droite->gauche != NULL));
+                bool printStrand = (gauche && droite && (T->droite->droite != NULL || T->droite->gauche != NULL));
                 string newPrefix = prefix + (printStrand ? "│   " : "    ");
                 cout << T->droite->Valeur << endl;
                 Affichage_Arbre(T->droite, newPrefix);
         }
 
-        if (hasLeft)
+        if (gauche)
         {
-                cout << (hasRight ? prefix : "") << "└── " << T->gauche->Valeur << endl;
+                cout << (droite ? prefix : "") << "└── " << T->gauche->Valeur << endl;
                 Affichage_Arbre(T->gauche, prefix + "    ");
         }
 }
